@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  task-app-user-db:
+    image: postgres:17
+    container_name: task-app-user-db
+    environment:
+      POSTGRES_USER: user_service
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: user_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - task_app_user_db_data:/var/lib/postgresql/data
+  
+  task-app-task-db:
+    image: postgres:17
+    container_name: task-app-task-db
+    environment:
+      POSTGRES_USER: task_service
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: task_db
+    ports:
+      - "5435:5432"
+    volumes:
+      - task_app_task_db_data:/var/lib/postgresql/data
+
+volumes:
+  task_app_user_db_data:
+  task_app_task_db_data:
