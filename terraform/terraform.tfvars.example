@@ -1,0 +1,12 @@
+project_id          = "your-gcp-project-id"
+region              = "asia-northeast1"
+environment         = "staging"
+
+bff_image           = "gcr.io/your-gcp-project-id/bff:staging"
+frontend_image      = "gcr.io/your-gcp-project-id/frontend:staging"
+user_service_image  = "gcr.io/your-gcp-project-id/user-service:staging"
+task_service_image  = "gcr.io/your-gcp-project-id/task-service:staging"
+
+artifact_registry_repository_id = "ktor-task-app-staging"
+
+# Optional: enable when domain is ready

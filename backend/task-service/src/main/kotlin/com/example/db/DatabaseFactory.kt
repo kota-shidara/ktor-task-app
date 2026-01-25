@@ -11,10 +11,14 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 
 object DatabaseFactory {
     fun init(config: ApplicationConfig) {
-        val driverClassName = config.property("storage.driverClassName").getString()
-        val jdbcURL = config.property("storage.jdbcURL").getString()
-        val user = config.property("storage.user").getString()
-        val password = config.property("storage.password").getString()
+        val driverClassName = System.getenv("STORAGE_DRIVER_CLASSNAME")
+            ?: config.property("storage.driverClassName").getString()
+        val jdbcURL = System.getenv("STORAGE_JDBCURL")
+            ?: config.property("storage.jdbcURL").getString()
+        val user = System.getenv("STORAGE_USER")
+            ?: config.property("storage.user").getString()
+        val password = System.getenv("STORAGE_PASSWORD")
+            ?: config.property("storage.password").getString()
 
         runFlyway(jdbcURL, user, password)
         val database = Database.connect(hikari(driverClassName, jdbcURL, user, password))
