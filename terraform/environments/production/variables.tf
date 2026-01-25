@@ -6,7 +6,7 @@ variable "project_id" {
 variable "region" {
   description = "Primary region for Cloud Run and Cloud SQL"
   type        = string
-  default     = "asia-northeast1"
+  default     = "us-west1"
 }
 
 variable "environment" {
