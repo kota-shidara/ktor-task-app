@@ -36,7 +36,7 @@ resource "google_service_networking_connection" "private_vpc_connection" {
 
 #      - 何を作る: Serverless VPC Access Connector（Cloud Run などサーバレスが VPC 内に出るための通路）。
 #      - なぜ必要: Cloud Run はデフォルトだと VPC 内に直接入れないので、プライベート IP の Cloud SQL に到達できない。
-#      - この構成での役割: run.tf の Cloud Run サービスで vpc_access { connector = ... egress = "ALL_TRAFFIC" } として使われ、CloudRun の通信を VPC 内に流す。
+#      - この構成での役割: run.tf の Cloud Run サービスで vpc_access { connector = ... egress = "PRIVATE_RANGES_ONLY" } として使われ、CloudRun の通信を VPC 内に流す。
 #      - 注意点:
 #          - ip_cidr_range = "10.10.16.0/28" は Connector 自体が使う小さいレンジ。サブネット本体のレンジと被らない必要がある。
 #          - Connector はリージョン固定なので Cloud Run と同リージョンで使う必要がある。

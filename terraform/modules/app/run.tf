@@ -36,7 +36,7 @@ resource "google_cloud_run_v2_service" "frontend" {
   name     = local.run_services.frontend.name
   location = var.region
 
-  ingress = "INGRESS_TRAFFIC_ALL"
+  ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
 
   template {
     service_account = google_service_account.frontend.email
