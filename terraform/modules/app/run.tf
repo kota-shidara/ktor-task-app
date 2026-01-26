@@ -180,21 +180,14 @@ resource "google_cloud_run_v2_service_iam_member" "bff_invoker" {
   name     = google_cloud_run_v2_service.bff.name
   location = var.region
   role     = "roles/run.invoker"
-  member   = "serviceAccount:${google_service_account.frontend.email}"
-}
-
-resource "google_cloud_run_v2_service_iam_member" "bff_invoker_lb" {
-  name     = google_cloud_run_v2_service.bff.name
-  location = var.region
-  role     = "roles/run.invoker"
-  member   = "serviceAccount:service-${data.google_project.current.number}@gcp-sa-cloudloadbalancing.iam.gserviceaccount.com"
+  member   = "allUsers"
 }
 
 resource "google_cloud_run_v2_service_iam_member" "frontend_invoker" {
   name     = google_cloud_run_v2_service.frontend.name
   location = var.region
   role     = "roles/run.invoker"
-  member   = "serviceAccount:service-${data.google_project.current.number}@gcp-sa-cloudloadbalancing.iam.gserviceaccount.com"
+  member   = "allUsers"
 }
 
 resource "google_cloud_run_v2_service_iam_member" "user_invoker" {

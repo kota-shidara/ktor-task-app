@@ -50,7 +50,7 @@ resource "google_compute_backend_service" "bff" {
     group = google_compute_region_network_endpoint_group.bff_neg.id
   }
 
-  depends_on = [google_cloud_run_v2_service_iam_member.bff_invoker_lb]
+  depends_on = [google_cloud_run_v2_service_iam_member.bff_invoker]
 }
 
 # ルーティングの核
