@@ -22,4 +22,6 @@ module "app" {
   frontend_max_instances          = var.frontend_max_instances
   backend_min_instances           = var.backend_min_instances
   backend_max_instances           = var.backend_max_instances
+  vpc_connector_max_instances     = var.vpc_connector_max_instances
+  vpc_connector_min_instances     = var.vpc_connector_min_instances
 }

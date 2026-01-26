@@ -3,6 +3,7 @@ resource "google_cloud_run_v2_service" "bff" {
   location = var.region
 
   ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
+  deletion_protection = var.enable_deletion_protection
 
   template {
     service_account = google_service_account.bff.email
@@ -37,6 +38,7 @@ resource "google_cloud_run_v2_service" "frontend" {
   location = var.region
 
   ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
+  deletion_protection = var.enable_deletion_protection
 
   template {
     service_account = google_service_account.frontend.email
@@ -61,6 +63,7 @@ resource "google_cloud_run_v2_service" "user" {
   location = var.region
 
   ingress = "INGRESS_TRAFFIC_INTERNAL_ONLY"
+  deletion_protection = var.enable_deletion_protection
 
   template {
     service_account = google_service_account.user.email
@@ -120,6 +123,7 @@ resource "google_cloud_run_v2_service" "task" {
   location = var.region
 
   ingress = "INGRESS_TRAFFIC_INTERNAL_ONLY"
+  deletion_protection = var.enable_deletion_protection
 
   template {
     service_account = google_service_account.task.email

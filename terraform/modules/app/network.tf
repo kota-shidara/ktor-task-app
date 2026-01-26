@@ -41,8 +41,10 @@ resource "google_service_networking_connection" "private_vpc_connection" {
 #          - ip_cidr_range = "10.10.16.0/28" は Connector 自体が使う小さいレンジ。サブネット本体のレンジと被らない必要がある。
 #          - Connector はリージョン固定なので Cloud Run と同リージョンで使う必要がある。
 resource "google_vpc_access_connector" "run" {
-  name          = "${local.name_prefix}-connector"
+  name          = local.vpc_connector_name
   region        = var.region
   network       = google_compute_network.main.name
   ip_cidr_range = "10.10.16.0/28"
+  min_instances = var.vpc_connector_min_instances
+  max_instances = var.vpc_connector_max_instances
 }

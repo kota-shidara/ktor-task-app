@@ -1,5 +1,7 @@
 locals {
   name_prefix = "ktor-task-app-${var.environment}"
+  # 固定パターン: 1-25 chars, lowercase, start with a letter, and end with [a-z0-9].
+  vpc_connector_name = "vpc-conn-${lower(var.environment)}"
 
   run_services = {
     bff = {

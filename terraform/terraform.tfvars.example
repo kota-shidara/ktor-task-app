@@ -8,5 +8,7 @@ user_service_image  = "gcr.io/your-gcp-project-id/user-service:staging"
 task_service_image  = "gcr.io/your-gcp-project-id/task-service:staging"
 
 artifact_registry_repository_id = "ktor-task-app-staging"
+vpc_connector_max_instances     = 3
+vpc_connector_min_instances     = 2
 
 # Optional: enable when domain is ready

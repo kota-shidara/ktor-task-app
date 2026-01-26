@@ -7,6 +7,7 @@ resource "google_sql_database_instance" "main" {
 
   settings {
     tier              = var.cloudsql_tier
+    edition           = "ENTERPRISE"
     disk_size         = var.cloudsql_disk_size_gb
     disk_autoresize   = true
     availability_type = "ZONAL"

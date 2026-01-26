@@ -93,3 +93,15 @@ variable "backend_max_instances" {
   type    = number
   default = 10
 }
+
+variable "vpc_connector_max_instances" {
+  description = "Max instances for Serverless VPC Access Connector"
+  type        = number
+  default     = 3
+}
+
+variable "vpc_connector_min_instances" {
+  description = "Min instances for Serverless VPC Access Connector (must be >= 2)"
+  type        = number
+  default     = 2
+}
