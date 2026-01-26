@@ -8,6 +8,15 @@ resource "google_cloud_run_v2_service" "bff" {
   template {
     service_account = google_service_account.bff.email
 
+    // bffの送信先であるuser-service, task-serviceは、ingress = "INGRESS_TRAFFIC_INTERNAL_ONLY"となっている。
+    // cloud run → cloud runの呼び出しであっても、それはvpcを経由しなければ、internalとはみなされない。そのため404となってしまう。
+    // https://docs.cloud.google.com/run/docs/securing/private-networking?hl=ja#from-other-services
+    // 宛先の Cloud Run リソースが、他の Cloud Run リソース、App Engine からトラフィックを受信し、「内部」または「内部およびロード バランシング」の上り（内向き）設定を使用する場合、トラフィックは VPC ネットワークを使用して内部とみなされる必要があります。
+    vpc_access {
+      connector = google_vpc_access_connector.run.id
+      egress    = "ALL_TRAFFIC"
+    }
+
     containers {
       image = local.run_services.bff.image
 
@@ -194,6 +203,8 @@ resource "google_cloud_run_v2_service_iam_member" "user_invoker" {
   name     = google_cloud_run_v2_service.user.name
   location = var.region
   role     = "roles/run.invoker"
+  // ServiceAccountだけ許可している。そのため、bffのindex.tsで、IDトークンを発行してrequest headerに乗せている
+  // もしmemberが"allUsers"であるなら、IDトークンは不要
   member   = "serviceAccount:${google_service_account.bff.email}"
 }
 

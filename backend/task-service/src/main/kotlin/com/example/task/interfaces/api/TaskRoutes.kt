@@ -15,7 +15,7 @@ import io.ktor.server.routing.route
 fun Route.taskRoute(taskService: TaskService) {
     route("/tasks") {
         get {
-            val authHeader = call.request.headers["Authorization"]
+            val authHeader = call.request.headers["X-User-Authorization"]
             val userId = authHeader?.removePrefix("Bearer dummy-token-")?.toIntOrNull()
             if (userId == null) {
                 call.respond(HttpStatusCode.Unauthorized)
@@ -27,7 +27,7 @@ fun Route.taskRoute(taskService: TaskService) {
         }
 
         post {
-            val authHeader = call.request.headers["Authorization"]
+            val authHeader = call.request.headers["X-User-Authorization"]
             val userId = authHeader?.removePrefix("Bearer dummy-token-")?.toIntOrNull()
             if (userId == null) {
                 call.respond(HttpStatusCode.Unauthorized)
@@ -44,7 +44,7 @@ fun Route.taskRoute(taskService: TaskService) {
         }
 
         put("/{id}") {
-            val authHeader = call.request.headers["Authorization"]
+            val authHeader = call.request.headers["X-User-Authorization"]
             val userId = authHeader?.removePrefix("Bearer dummy-token-")?.toIntOrNull()
             if (userId == null) {
                 call.respond(HttpStatusCode.Unauthorized)
@@ -68,7 +68,7 @@ fun Route.taskRoute(taskService: TaskService) {
         }
 
         delete("/{id}") {
-            val authHeader = call.request.headers["Authorization"]
+            val authHeader = call.request.headers["X-User-Authorization"]
             val userId = authHeader?.removePrefix("Bearer dummy-token-")?.toIntOrNull()
             if (userId == null) {
                 call.respond(HttpStatusCode.Unauthorized)
