@@ -2,9 +2,6 @@
 .kotlin
 build/
 out/
-gradle/*
-!gradle/wrapper/gradle-wrapper.jar
-!gradle/libs.versions.toml
 !**/src/main/**/build/
 !**/src/test/**/build/
 bin/
