@@ -1,0 +1,73 @@
+name: deploy-staging
+
+on:
+  # push:
+  #   branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  PROJECT_ID: ktor-task-app-staging
+  REGION: us-west1
+  AR_REPO: ktor-task-app-staging
+  TAG: staging
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      - name: Build and push images
+        env:
+          REGISTRY: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.AR_REPO }}
+          VITE_API_BASE_URL: http://34.120.187.25
+        run: |
+          set -euo pipefail
+          docker build -t ${REGISTRY}/bff:${TAG} bff
+          docker build --build-arg VITE_API_BASE_URL=${VITE_API_BASE_URL} -t ${REGISTRY}/frontend:${TAG} frontend
+          docker build -t ${REGISTRY}/user-service:${TAG} backend/user-service
+          docker build -t ${REGISTRY}/task-service:${TAG} backend/task-service
+
+          docker push ${REGISTRY}/bff:${TAG}
+          docker push ${REGISTRY}/frontend:${TAG}
+          docker push ${REGISTRY}/user-service:${TAG}
+          docker push ${REGISTRY}/task-service:${TAG}
+
+      - name: Deploy to Cloud Run (staging)
+        env:
+          REGISTRY: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.AR_REPO }}
+        run: |
+          set -euo pipefail
+          gcloud run deploy ktor-task-app-staging-bff \
+            --region=${REGION} \
+            --image=${REGISTRY}/bff:${TAG} \
+            --quiet
+          gcloud run deploy ktor-task-app-staging-frontend \
+            --region=${REGION} \
+            --image=${REGISTRY}/frontend:${TAG} \
+            --quiet
+          gcloud run deploy ktor-task-app-staging-user \
+            --region=${REGION} \
+            --image=${REGISTRY}/user-service:${TAG} \
+            --quiet
+          gcloud run deploy ktor-task-app-staging-task \
+            --region=${REGION} \
+            --image=${REGISTRY}/task-service:${TAG} \
+            --quiet
