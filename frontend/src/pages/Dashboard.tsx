@@ -25,7 +25,7 @@ const dashboard = () => {
 
   const fetchTasks = async () => {
     try {
-      const res = await client.get('/tasks');
+      const res = await client.get('/api/tasks');
       setTasks(res.data);
     } catch (e: any) {
       console.log(`タスク読み込み失敗 ${e}`);
@@ -34,14 +34,14 @@ const dashboard = () => {
 
   const handleStatusChange = async (id: number, title: string, description: string, priority: TaskPriority, status: TaskStatus) => {
     try {
-      await client.put(`/tasks/${id}`, { id, title, description, priority, status })
+      await client.put(`/api/tasks/${id}`, { id, title, description, priority, status })
       fetchTasks()
     } catch (e) { console.log(`タスク更新失敗 ${e}`)}
   }
 
   const handleDelete = async (id: number) => {
     try {
-      await client.delete(`/tasks/${id}`)
+      await client.delete(`/api/tasks/${id}`)
       fetchTasks()
     } catch (e) { console.log(`削除失敗 ${e}`)}
   }

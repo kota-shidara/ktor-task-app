@@ -10,7 +10,7 @@ const LoginPage: React.FC = () => {
 
   const handleLogin = async () => {
     try {
-      const res = await client.post('/auth/login', { email, password })
+      const res = await client.post('/api/auth/login', { email, password })
       if (res.data.token) {
         login(res.data.token, res.data.name)
         alert(`Loginに成功 ${res.data.name}`)

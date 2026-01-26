@@ -10,7 +10,7 @@ const NewTaskForm = ({ onCreateTask }: { onCreateTask: () => void }) => {
 
   const handleCreate = async () => {
     try {
-      await client.post('/tasks', { title, description, priority })
+      await client.post('/api/tasks', { title, description, priority })
       setTitle('')
       setDescription('')
       setPriority('MEDIUM')

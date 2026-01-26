@@ -11,7 +11,7 @@ const RegisterPage: React.FC = () => {
 
   const handleRegister = async () => {
     try {
-      const res = await client.post('/auth/register', { name, email, password })
+      const res = await client.post('/api/auth/register', { name, email, password })
       if (res.data.token) {
         login(res.data.token, res.data.name)
         alert(`新規登録に成功 ${res.data.name}`)
