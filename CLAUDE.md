@@ -42,3 +42,14 @@ Frontend → BFF → Backend Services
 - フロントエンドは`X-User-Authorization`ヘッダーでトークンを送信
 - BFFは`/api/auth/*`をuser-service、`/api/*`をtask-serviceにプロキシ
 - Cloud Run環境ではBFFがGoogle IAMトークンを付与
+
+## Gitブランチ命名規則
+
+| プレフィックス | 用途 |
+|---------------|------|
+| `feature/` | 新機能追加 |
+| `optimize/` | パフォーマンス最適化 |
+| `fix/` | バグ修正 |
+| `refactor/` | リファクタリング |
+
+例: `feature/add-user-profile`, `fix/login-error`, `refactor/task-service-cleanup`
