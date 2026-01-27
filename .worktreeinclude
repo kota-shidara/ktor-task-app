@@ -1,0 +1,9 @@
+# 環境変数ファイル（git管理外のローカル設定）
+**/.env
+**/.env.local
+
+# Claude Code の設定
+.claude/**
+
+# Serena の設定
+.serena/**
