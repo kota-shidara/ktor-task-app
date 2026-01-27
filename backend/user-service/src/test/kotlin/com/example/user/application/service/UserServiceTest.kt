@@ -1,8 +1,7 @@
 package com.example.com.example.user.application.service
 
 import com.example.com.example.user.application.dto.RegisterRequest
-import com.example.com.example.user.domain.model.User
-import com.example.com.example.user.domain.repository.UserRepository
+import com.example.com.example.user.domain.repository.FakeUserRepository
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -11,17 +10,8 @@ import kotlin.test.assertTrue
 
 class UserServiceTest {
 
-    private val mockRepository = object : UserRepository {
-        override suspend fun create(user: User): User {
-            return user.copy(id = 1)
-        }
-
-        override suspend fun findByEmail(email: String): User? {
-            return null
-        }
-    }
-
-    private val userService = UserService(mockRepository)
+    private val fakeRepository = FakeUserRepository()
+    private val userService = UserService(fakeRepository)
 
     @Test
     fun `register should return AuthResponse with token and name`() = runBlocking {
