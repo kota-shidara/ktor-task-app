@@ -11,20 +11,21 @@ import kotlin.test.assertTrue
 
 class UserServiceTest {
 
+    private val mockRepository = object : UserRepository {
+        override suspend fun create(user: User): User {
+            return user.copy(id = 1)
+        }
+
+        override suspend fun findByEmail(email: String): User? {
+            return null
+        }
+    }
+
+    private val userService = UserService(mockRepository)
+
     @Test
     fun `register should return AuthResponse with token and name`() = runBlocking {
         // Arrange
-        val mockRepository = object : UserRepository {
-            override suspend fun create(user: User): User {
-                return user.copy(id = 1)
-            }
-
-            override suspend fun findByEmail(email: String): User? {
-                return null
-            }
-        }
-
-        val userService = UserService(mockRepository)
         val request = RegisterRequest(
             name = "テストユーザー",
             email = "test@example.com",
