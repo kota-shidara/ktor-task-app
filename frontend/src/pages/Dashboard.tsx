@@ -50,7 +50,7 @@ const dashboard = () => {
     <div className="p-8 bg-gray-50 min-h-screen">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold">タスク一覧</h1>
+          <h1 className="text-3xl font-bold">マイタスク</h1>
           <p className="text-sm text-gray-500">{name}</p>
         </div>
         <button
