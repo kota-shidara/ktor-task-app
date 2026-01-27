@@ -57,4 +57,21 @@ class ApplicationTest {
             assertEquals(HttpStatusCode.Unauthorized, status)
         }
     }
+
+    @Test
+    fun testTasksEndpointReturnsOkWithValidAuthHeader() = testApplication {
+        install(io.ktor.server.plugins.contentnegotiation.ContentNegotiation) {
+            json()
+        }
+        routing {
+            val repository = MockTaskRepository()
+            val taskService = TaskService(repository)
+            taskRoute(taskService)
+        }
+        client.get("/tasks") {
+            header("X-User-Authorization", "Bearer dummy-token-1")
+        }.apply {
+            assertEquals(HttpStatusCode.OK, status)
+        }
+    }
 }
