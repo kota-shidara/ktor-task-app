@@ -1,0 +1,17 @@
+[copy]
+    # 環境変数ファイル（git管理外のローカル設定）
+    include = **/.env
+    include = **/.env.local
+
+    # Claude Code の設定
+    includeDirs = .claude
+
+    # Serena の設定
+    includeDirs = .serena
+
+[hooks]
+    # Node.js プロジェクトの依存関係をインストール
+    postCreate = cd bff && npm ci && cd ../frontend && npm ci
+
+[defaults]
+    ai = claude
