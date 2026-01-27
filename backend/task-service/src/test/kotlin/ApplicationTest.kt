@@ -16,7 +16,7 @@ class ApplicationTest {
 
     @Test
     fun testTasksEndpointReturnsUnauthorizedWithoutAuthHeader() = testApplication {
-        install(io.ktor.server.plugins.contentnegotiation.ContentNegotiation) {
+        install(ContentNegotiation) {
             json()
         }
         routing {
@@ -31,7 +31,7 @@ class ApplicationTest {
 
     @Test
     fun testTasksEndpointReturnsOkWithValidAuthHeader() = testApplication {
-        install(io.ktor.server.plugins.contentnegotiation.ContentNegotiation) {
+        install(ContentNegotiation) {
             json()
         }
         routing {
