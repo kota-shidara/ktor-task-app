@@ -17,10 +17,12 @@
 
 ```bash
 # リポジトリルートで実行
-docker compose up -d                          # DB起動 (compose.yaml)
+docker compose up -d                          # DB + Pub/Subエミュレータ起動 (compose.yaml)
+./scripts/setup-pubsub-emulator.sh            # Pub/Subトピック・サブスクリプション作成
 
-cd backend/user-service && ./gradlew run      # ユーザーサービス
-cd backend/task-service && ./gradlew run      # タスクサービス
+# PUBSUB_EMULATOR_HOST を設定して各サービスを起動
+PUBSUB_EMULATOR_HOST=localhost:8085 cd backend/user-service && ./gradlew run      # ユーザーサービス
+PUBSUB_EMULATOR_HOST=localhost:8085 cd backend/task-service && ./gradlew run      # タスクサービス
 cd bff && npm run dev                         # BFF
 cd frontend && npm run dev                    # フロントエンド
 ```
@@ -42,6 +44,16 @@ Frontend → BFF → Backend Services
 - フロントエンドは`X-User-Authorization`ヘッダーでトークンを送信
 - BFFは`/api/auth/*`をuser-service、`/api/*`をtask-serviceにプロキシ
 - Cloud Run環境ではBFFがGoogle IAMトークンを付与
+- ユーザー削除時、User ServiceがPub/Subへ`user.deleted`イベントを発行し、Task Serviceが受信して該当ユーザーのタスクを全削除
+
+## Pub/Sub 環境変数
+
+| 変数 | サービス | ローカル | Cloud Run |
+|------|---------|---------|-----------|
+| `PUBSUB_EMULATOR_HOST` | 両方 | `localhost:8085` | (未設定) |
+| `GCP_PROJECT_ID` | 両方 | `local-project` | Terraform設定 |
+| `PUBSUB_TOPIC_USER_EVENTS` | user-service | `user-events` | Terraform設定 |
+| `PUBSUB_SUBSCRIPTION_USER_EVENTS` | task-service | `task-service-user-events` | Terraform設定 |
 
 ## Gitブランチ命名規則
 

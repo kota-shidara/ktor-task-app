@@ -5,6 +5,8 @@ import com.example.com.example.task.domain.infrastracture.persistence.TaskEntity
 import com.example.com.example.task.domain.infrastracture.persistence.TaskTable
 import com.example.com.example.task.domain.model.Task
 import com.example.com.example.task.domain.repository.TaskRepository
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.deleteWhere
 
 class ExposedTaskRepository : TaskRepository {
     override suspend fun findById(id: Int): Task? = dbQuery {
@@ -44,6 +46,10 @@ class ExposedTaskRepository : TaskRepository {
         val entity = TaskEntity.findById(id)
         entity?.delete()
         entity != null
+    }
+
+    override suspend fun deleteAllByUserId(userId: Int): Int = dbQuery {
+        TaskTable.deleteWhere { TaskTable.userId eq userId }
     }
 
     private fun TaskEntity.toDomain() =

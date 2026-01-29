@@ -27,3 +27,6 @@
 | `STORAGE_JDBCURL` | JDBC接続URL | `jdbc:postgresql://localhost:5435/task_db` |
 | `STORAGE_USER` | DBユーザー | `task_service` |
 | `STORAGE_PASSWORD` | DBパスワード | `password` |
+| `PUBSUB_EMULATOR_HOST` | Pub/Subエミュレータホスト（ローカル用） | - |
+| `GCP_PROJECT_ID` | GCPプロジェクトID | `local-project` (application.yaml) |
+| `PUBSUB_SUBSCRIPTION_USER_EVENTS` | ユーザーイベント用サブスクリプション | `task-service-user-events` (application.yaml) |

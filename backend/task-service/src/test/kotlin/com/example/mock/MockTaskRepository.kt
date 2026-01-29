@@ -27,4 +27,10 @@ class MockTaskRepository : TaskRepository {
     override suspend fun delete(id: Int): Boolean {
         return tasks.removeIf { it.id == id }
     }
+
+    override suspend fun deleteAllByUserId(userId: Int): Int {
+        val count = tasks.count { it.userId == userId }
+        tasks.removeAll { it.userId == userId }
+        return count
+    }
 }

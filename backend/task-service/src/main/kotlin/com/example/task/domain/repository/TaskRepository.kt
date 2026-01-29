@@ -8,4 +8,5 @@ interface TaskRepository {
     suspend fun create(task: Task): Task
     suspend fun update(task: Task): Boolean
     suspend fun delete(id: Int): Boolean
+    suspend fun deleteAllByUserId(userId: Int): Int
 }

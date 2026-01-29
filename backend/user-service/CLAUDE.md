@@ -27,3 +27,6 @@
 | `STORAGE_JDBCURL` | JDBC接続URL | `jdbc:postgresql://localhost:5434/user_db` |
 | `STORAGE_USER` | DBユーザー | `user_service` |
 | `STORAGE_PASSWORD` | DBパスワード | `password` |
+| `PUBSUB_EMULATOR_HOST` | Pub/Subエミュレータホスト（ローカル用） | - |
+| `GCP_PROJECT_ID` | GCPプロジェクトID | `local-project` (application.yaml) |
+| `PUBSUB_TOPIC_USER_EVENTS` | ユーザーイベント用トピック | `user-events` (application.yaml) |

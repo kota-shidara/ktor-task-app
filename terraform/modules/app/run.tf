@@ -116,6 +116,16 @@ resource "google_cloud_run_v2_service" "user" {
           }
         }
       }
+
+      env {
+        name  = "GCP_PROJECT_ID"
+        value = var.project_id
+      }
+
+      env {
+        name  = "PUBSUB_TOPIC_USER_EVENTS"
+        value = google_pubsub_topic.user_events.name
+      }
     }
 
     scaling {
@@ -172,6 +182,16 @@ resource "google_cloud_run_v2_service" "task" {
             version = "latest"
           }
         }
+      }
+
+      env {
+        name  = "GCP_PROJECT_ID"
+        value = var.project_id
+      }
+
+      env {
+        name  = "PUBSUB_SUBSCRIPTION_USER_EVENTS"
+        value = google_pubsub_subscription.task_service_user_events.name
       }
     }
 
