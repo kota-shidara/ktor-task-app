@@ -1,9 +1,13 @@
 package com.example.com.example.user.domain.infrastracture.messaging
 
+import com.google.api.gax.core.NoCredentialsProvider
+import com.google.api.gax.grpc.GrpcTransportChannel
+import com.google.api.gax.rpc.FixedTransportChannelProvider
 import com.google.cloud.pubsub.v1.Publisher
 import com.google.protobuf.ByteString
 import com.google.pubsub.v1.PubsubMessage
 import com.google.pubsub.v1.TopicName
+import io.grpc.ManagedChannelBuilder
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.slf4j.LoggerFactory
@@ -18,7 +22,18 @@ class PubSubUserEventPublisher(
 ) : UserEventPublisher {
 
     private val logger = LoggerFactory.getLogger(PubSubUserEventPublisher::class.java)
-    private val publisher: Publisher = Publisher.newBuilder(TopicName.of(projectId, topicId)).build()
+    private val publisher: Publisher = run {
+        val topicName = TopicName.of(projectId, topicId)
+        val builder = Publisher.newBuilder(topicName)
+        val emulatorHost = System.getenv("PUBSUB_EMULATOR_HOST")
+        if (emulatorHost != null) {
+            val channel = ManagedChannelBuilder.forTarget(emulatorHost).usePlaintext().build()
+            val channelProvider = FixedTransportChannelProvider.create(GrpcTransportChannel.create(channel))
+            builder.setChannelProvider(channelProvider)
+            builder.setCredentialsProvider(NoCredentialsProvider.create())
+        }
+        builder.build()
+    }
 
     override fun publishUserDeleted(userId: Int) {
         try {
