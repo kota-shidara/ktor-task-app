@@ -1,10 +1,12 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import client from '../api/client';
 
 interface AuthContextType {
   isAuthenticated: Boolean;
   name: string | null,
   login: (token: string, name: string) => void;
   logout: () => void;
+  deleteAccount: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -38,8 +40,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setname(null)
   }
 
+  const deleteAccount = async () => {
+    await client.delete('/api/auth/account')
+    localStorage.removeItem('token')
+    localStorage.removeItem('name')
+    setIsAuthenticated(false)
+    setname(null)
+  }
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, name, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, name, login, logout, deleteAccount }}>
       {children}
     </AuthContext.Provider>
   )

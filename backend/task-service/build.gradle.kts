@@ -34,6 +34,7 @@ dependencies {
     runtimeOnly(libs.flyway.postgresql)
     implementation(libs.hikaricp)
     implementation(libs.jbcrypt)
+    implementation(libs.google.cloud.pubsub)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
 }

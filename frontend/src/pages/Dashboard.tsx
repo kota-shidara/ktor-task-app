@@ -16,8 +16,11 @@ interface Task {
 
 const dashboard = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
-  const { name, logout } = useAuth()
+  const { name, logout, deleteAccount } = useAuth()
 
   useEffect(() => {
     fetchTasks()
@@ -46,6 +49,17 @@ const dashboard = () => {
     } catch (e) { console.log(`削除失敗 ${e}`)}
   }
 
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true)
+    setDeleteError(null)
+    try {
+      await deleteAccount()
+    } catch (e) {
+      setIsDeleting(false)
+      setDeleteError('退会処理に失敗しました。もう一度お試しください。')
+    }
+  }
+
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
       <div className="flex justify-between items-center mb-6">
@@ -53,12 +67,20 @@ const dashboard = () => {
           <h1 className="text-3xl font-bold">タスク一覧</h1>
           <p className="text-sm text-gray-500">{name}</p>
         </div>
-        <button
-          className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-          onClick={logout}
-        >
-          ログアウト
-        </button>
+        <div className="flex gap-2">
+          <button
+            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+            onClick={logout}
+          >
+            ログアウト
+          </button>
+          <button
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+            onClick={() => setShowDeleteModal(true)}
+          >
+            退会
+          </button>
+        </div>
       </div>
       
 
@@ -91,6 +113,35 @@ const dashboard = () => {
         })}
       </div>
 
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h2 className="text-xl font-bold text-red-600 mb-4">退会確認</h2>
+            <p className="text-gray-700 mb-6">
+              退会すると、全てのタスクも削除されます。この操作は取り消せません。本当に退会しますか？
+            </p>
+            {deleteError && (
+              <p className="text-red-600 text-sm mb-4">{deleteError}</p>
+            )}
+            <div className="flex justify-end gap-3">
+              <button
+                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded"
+                onClick={() => { setShowDeleteModal(false); setDeleteError(null) }}
+                disabled={isDeleting}
+              >
+                キャンセル
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded disabled:opacity-50"
+                onClick={handleDeleteAccount}
+                disabled={isDeleting}
+              >
+                {isDeleting ? '処理中...' : '退会する'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   )

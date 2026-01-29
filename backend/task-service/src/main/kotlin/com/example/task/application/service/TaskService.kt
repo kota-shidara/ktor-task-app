@@ -51,6 +51,10 @@ class TaskService(private val repository: TaskRepository) {
         return repository.delete(taskId)
     }
 
+    suspend fun deleteAllTasksForUser(userId: Int): Int {
+        return repository.deleteAllByUserId(userId)
+    }
+
     private fun Task.toDto() = TaskDto(
         id = this.id,
         title = this.title,

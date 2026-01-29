@@ -5,4 +5,6 @@ import com.example.com.example.user.domain.model.User
 interface UserRepository {
     suspend fun create(user: User): User
     suspend fun findByEmail(email: String): User?
+    suspend fun findById(id: Int): User?
+    suspend fun deleteById(id: Int): Boolean
 }
