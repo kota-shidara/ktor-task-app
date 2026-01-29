@@ -1,3 +1,8 @@
+---
+name: switch-main
+description: mainブランチに切り替えて最新の状態に更新する。ブランチを切り替えたい時に使用する。
+---
+
 # Switch to Main
 
 mainブランチに切り替えて最新の状態に更新します。
