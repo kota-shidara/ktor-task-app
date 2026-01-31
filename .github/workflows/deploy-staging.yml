@@ -4,6 +4,15 @@ on:
   # push:
   #   branches: ["main"]
   workflow_dispatch:
+    inputs:
+      build_images:
+        description: 'Docker imageをビルド＆プッシュする'
+        type: boolean
+        default: true
+      deploy_cloud_run:
+        description: 'Cloud Runにデプロイする'
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -32,9 +41,11 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
 
       - name: Configure Docker for Artifact Registry
+        if: ${{ inputs.build_images }}
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
 
       - name: Build and push images
+        if: ${{ inputs.build_images }}
         env:
           REGISTRY: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.AR_REPO }}
           VITE_API_BASE_URL: http://34.36.225.148
@@ -51,6 +62,7 @@ jobs:
           docker push ${REGISTRY}/task-service:${TAG}
 
       - name: Deploy to Cloud Run (staging)
+        if: ${{ inputs.deploy_cloud_run }}
         env:
           REGISTRY: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.AR_REPO }}
         run: |
