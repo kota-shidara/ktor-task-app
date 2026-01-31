@@ -12,6 +12,8 @@ storage:
 pubsub:
   projectId: "local-project"
   topics:
+    userRegistered: "user-registered"
     userDeleted: "user-deleted"
   subscriptions:
+    userRegistered: "task-service-user-registered-sub"
     userDeleted: "task-service-user-deleted-sub"

@@ -11,6 +11,17 @@ class TaskService(private val repository: TaskRepository) {
         return repository.findAllByUserId(userId).map { it.toDto() }
     }
 
+    suspend fun createDefaultTask(userId: Int, userName: String) {
+        val task = Task(
+            title = "$userName さんの初めてのタスク",
+            description = "使い方を学習しよう！",
+            priority = TaskPriority.MEDIUM,
+            status = TaskStatus.PENDING,
+            userId = userId
+        )
+        repository.create(task)
+    }
+
     suspend fun create(dto: TaskDto, userId: Int): TaskDto {
         val task = Task(
             title = dto.title,
