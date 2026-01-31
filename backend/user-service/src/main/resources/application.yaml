@@ -11,4 +11,5 @@ storage:
   password: "password"
 pubsub:
   projectId: "local-project"
-  topicId: "user-deleted"
+  topics:
+    userDeleted: "user-deleted"

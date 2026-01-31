@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory
  * 本番ではトピックはインフラ側（Terraform等）で事前に作成される。
  *
  * user-service はPublisher側のため、トピックの作成のみを行う。
+ * 参考: https://docs.cloud.google.com/pubsub/docs/emulator?hl=ja
  */
 object PubSubInitializer {
 

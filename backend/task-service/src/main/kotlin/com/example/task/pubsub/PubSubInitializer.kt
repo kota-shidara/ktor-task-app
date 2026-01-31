@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory
  * 本番ではトピック・サブスクリプションはインフラ側（Terraform等）で事前に作成される。
  *
  * task-service はSubscriber側のため、トピックに加えてサブスクリプションも作成する。
+ * 参考: https://docs.cloud.google.com/pubsub/docs/emulator?hl=ja
  */
 object PubSubInitializer {
 

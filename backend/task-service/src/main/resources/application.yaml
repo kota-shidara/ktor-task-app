@@ -11,5 +11,7 @@ storage:
   password: "password"
 pubsub:
   projectId: "local-project"
-  topicId: "user-deleted"
-  subscriptionId: "task-service-user-deleted-sub"
+  topics:
+    userDeleted: "user-deleted"
+  subscriptions:
+    userDeleted: "task-service-user-deleted-sub"

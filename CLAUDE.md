@@ -43,6 +43,20 @@ Frontend → BFF → Backend Services
 - BFFは`/api/auth/*`をuser-service、`/api/*`をtask-serviceにプロキシ
 - Cloud Run環境ではBFFがGoogle IAMトークンを付与
 
+## 環境変数の設定パターン
+
+本番環境で必要な設定値にはデフォルト値を設定しない。環境変数 → config ファイル → error() の順で解決する:
+
+```kotlin
+val value = System.getenv("ENV_VAR")
+    ?: config.propertyOrNull("section.key")?.getString()
+    ?: error("section.key is not configured. Set ENV_VAR env var or section.key in application.yaml")
+```
+
+- ローカル開発: application.yaml の値を使用
+- Cloud Run: Terraform が設定した環境変数を使用
+- どちらも未設定: 起動時に即座に失敗
+
 ## Gitブランチ命名規則
 
 | プレフィックス | 用途 |
