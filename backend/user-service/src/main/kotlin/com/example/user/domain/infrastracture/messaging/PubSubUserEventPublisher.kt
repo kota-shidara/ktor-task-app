@@ -26,6 +26,7 @@ class PubSubUserEventPublisher(
         val topicName = TopicName.of(projectId, topicId)
         val builder = Publisher.newBuilder(topicName)
         val emulatorHost = System.getenv("PUBSUB_EMULATOR_HOST")
+        // ローカル環境でのみ必要な処理。本番ではライブラリが自動でgoogle cloud上のpub/subにつなげくれる模様（詳細はまだ理解していない）
         if (emulatorHost != null) {
             val channel = ManagedChannelBuilder.forTarget(emulatorHost).usePlaintext().build()
             val channelProvider = FixedTransportChannelProvider.create(GrpcTransportChannel.create(channel))
