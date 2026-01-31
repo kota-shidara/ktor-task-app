@@ -23,6 +23,13 @@ class UserService(
             password = hashedPassword
         )
         val createdUser = repository.create(user)
+
+        try {
+            eventPublisher?.publishUserRegistered(createdUser.id!!)
+        } catch (e: Exception) {
+            logger.error("User registered but failed to publish event for userId=${createdUser.id!!}.", e)
+        }
+
         return AuthResponse("dummy-token-${createdUser.id}", createdUser.name)
     }
 

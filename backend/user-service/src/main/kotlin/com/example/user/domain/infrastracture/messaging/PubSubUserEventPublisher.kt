@@ -14,15 +14,49 @@ import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
 
 @Serializable
+private data class UserRegisteredEvent(val userId: Int)
+
+@Serializable
 private data class UserDeletedEvent(val userId: Int)
 
 class PubSubUserEventPublisher(
     projectId: String,
-    topicId: String
+    registeredTopicId: String,
+    deletedTopicId: String
 ) : UserEventPublisher {
 
     private val logger = LoggerFactory.getLogger(PubSubUserEventPublisher::class.java)
-    private val publisher: Publisher = run {
+    private val userRegisteredPublisher: Publisher = createPublisher(projectId, registeredTopicId)
+    private val userDeletedPublisher: Publisher = createPublisher(projectId, deletedTopicId)
+
+    override fun publishUserRegistered(userId: Int) {
+        try {
+            val json = Json.encodeToString(UserRegisteredEvent.serializer(), UserRegisteredEvent(userId))
+            publish(userRegisteredPublisher, "user-registered", json, userId)
+        } catch (e: Exception) {
+            logger.error("Failed to publish user-registered event for userId=$userId: ${e.message}", e)
+            throw e
+        }
+    }
+
+    override fun publishUserDeleted(userId: Int) {
+        try {
+            val json = Json.encodeToString(UserDeletedEvent.serializer(), UserDeletedEvent(userId))
+            publish(userDeletedPublisher, "user-deleted", json, userId)
+        } catch (e: Exception) {
+            logger.error("Failed to publish user-deleted event for userId=$userId: ${e.message}", e)
+            throw e
+        }
+    }
+
+    fun shutdown() {
+        userRegisteredPublisher.shutdown()
+        userRegisteredPublisher.awaitTermination(30, TimeUnit.SECONDS)
+        userDeletedPublisher.shutdown()
+        userDeletedPublisher.awaitTermination(30, TimeUnit.SECONDS)
+    }
+
+    private fun createPublisher(projectId: String, topicId: String): Publisher {
         val topicName = TopicName.of(projectId, topicId)
         val builder = Publisher.newBuilder(topicName)
         val emulatorHost = System.getenv("PUBSUB_EMULATOR_HOST")
@@ -33,28 +67,17 @@ class PubSubUserEventPublisher(
             builder.setChannelProvider(channelProvider)
             builder.setCredentialsProvider(NoCredentialsProvider.create())
         }
-        builder.build()
+        return builder.build()
     }
 
-    override fun publishUserDeleted(userId: Int) {
-        try {
-            val json = Json.encodeToString(UserDeletedEvent.serializer(), UserDeletedEvent(userId))
-            val data = ByteString.copyFromUtf8(json)
-            val message = PubsubMessage.newBuilder()
-                .setData(data)
-                .putAttributes("eventType", "user-deleted")
-                .build()
-            val future = publisher.publish(message)
-            val messageId = future.get(10, TimeUnit.SECONDS)
-            logger.info("Published user-deleted event for userId=$userId, messageId=$messageId")
-        } catch (e: Exception) {
-            logger.error("Failed to publish user-deleted event for userId=$userId: ${e.message}", e)
-            throw e
-        }
-    }
-
-    fun shutdown() {
-        publisher.shutdown()
-        publisher.awaitTermination(30, TimeUnit.SECONDS)
+    private fun publish(publisher: Publisher, eventType: String, json: String, userId: Int) {
+        val data = ByteString.copyFromUtf8(json)
+        val message = PubsubMessage.newBuilder()
+            .setData(data)
+            .putAttributes("eventType", eventType)
+            .build()
+        val future = publisher.publish(message)
+        val messageId = future.get(10, TimeUnit.SECONDS)
+        logger.info("Published $eventType event for $userId, messageId=$messageId")
     }
 }

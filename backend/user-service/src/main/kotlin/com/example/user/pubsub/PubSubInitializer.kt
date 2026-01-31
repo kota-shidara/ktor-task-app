@@ -23,7 +23,7 @@ object PubSubInitializer {
 
     private val logger = LoggerFactory.getLogger(PubSubInitializer::class.java)
 
-    fun ensureTopicExists(projectId: String, topicId: String) {
+    fun ensureTopicExists(projectId: String, registeredTopicId: String, deletedTopicId: String) {
         // エミュレータ環境でのみ実行。本番環境ではスキップする。
         val emulatorHost = System.getenv("PUBSUB_EMULATOR_HOST") ?: return
 
@@ -49,11 +49,15 @@ object PubSubInitializer {
         )
 
         try {
-            val topicName = TopicName.of(projectId, topicId)
-            topicAdminClient.createTopic(topicName)
-            logger.info("Created Pub/Sub topic: $topicName")
-        } catch (e: com.google.api.gax.rpc.AlreadyExistsException) {
-            logger.info("Pub/Sub topic already exists: $topicId")
+            for (topicId in listOf(deletedTopicId, registeredTopicId)) {
+                try {
+                    val topicName = TopicName.of(projectId, topicId)
+                    topicAdminClient.createTopic(topicName)
+                    logger.info("Created Pub/Sub topic: $topicName")
+                } catch (e: com.google.api.gax.rpc.AlreadyExistsException) {
+                    logger.info("Pub/Sub topic already exists: $topicId")
+                }
+            }
         } finally {
             topicAdminClient.close()
             channel.shutdown()

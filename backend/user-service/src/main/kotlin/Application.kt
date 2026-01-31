@@ -12,16 +12,19 @@ fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
 }
 
-data class PubSubConfig(val projectId: String, val topicUserDeleted: String)
+data class PubSubConfig(val projectId: String, val topicUserRegistered: String, val topicUserDeleted: String)
 
 fun Application.resolvePubSubConfig(): PubSubConfig {
     val projectId = System.getenv("PUBSUB_PROJECTID")
         ?: environment.config.propertyOrNull("pubsub.projectId")?.getString()
         ?: error("pubsub.projectId is not configured. Set PUBSUB_PROJECTID env var or pubsub.projectId in application.yaml")
+    val topicUserRegistered = System.getenv("PUBSUB_TOPIC_USER_REGISTERED")
+        ?: environment.config.propertyOrNull("pubsub.topics.userRegistered")?.getString()
+        ?: error("pubsub.topics.userRegistered is not configured. Set PUBSUB_TOPIC_USER_REGISTERED env var or pubsub.topics.userRegistered in application.yaml")
     val topicUserDeleted = System.getenv("PUBSUB_TOPIC_USER_DELETED")
         ?: environment.config.propertyOrNull("pubsub.topics.userDeleted")?.getString()
         ?: error("pubsub.topics.userDeleted is not configured. Set PUBSUB_TOPIC_USER_DELETED env var or pubsub.topics.userDeleted in application.yaml")
-    return PubSubConfig(projectId, topicUserDeleted)
+    return PubSubConfig(projectId, topicUserRegistered, topicUserDeleted)
 }
 
 fun Application.module() {
@@ -35,7 +38,7 @@ fun Application.module() {
 }
 
 fun Application.configurePubSub(config: PubSubConfig) {
-    PubSubInitializer.ensureTopicExists(config.projectId, config.topicUserDeleted)
+    PubSubInitializer.ensureTopicExists(config.projectId, config.topicUserRegistered, config.topicUserDeleted)
 }
 
 fun Application.configureValidation() {

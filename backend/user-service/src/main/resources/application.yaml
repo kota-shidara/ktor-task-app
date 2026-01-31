@@ -12,4 +12,5 @@ storage:
 pubsub:
   projectId: "local-project"
   topics:
+    userRegistered: "user-registered"
     userDeleted: "user-deleted"

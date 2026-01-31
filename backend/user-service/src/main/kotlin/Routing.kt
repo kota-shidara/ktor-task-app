@@ -11,7 +11,7 @@ import io.ktor.server.routing.*
 fun Application.configureRouting(pubSubConfig: PubSubConfig) {
     routing {
         val repository = ExposedUserRepository()
-        val eventPublisher = PubSubUserEventPublisher(pubSubConfig.projectId, pubSubConfig.topicUserDeleted)
+        val eventPublisher = PubSubUserEventPublisher(pubSubConfig.projectId, pubSubConfig.topicUserRegistered, pubSubConfig.topicUserDeleted)
         val userService = UserService(repository, eventPublisher)
 
         userRoute(userService)
