@@ -28,7 +28,11 @@ object PubSubInitializer {
 
     private val logger = LoggerFactory.getLogger(PubSubInitializer::class.java)
 
-    fun ensureTopicAndSubscription(projectId: String, topicId: String, subscriptionId: String) {
+    fun ensureTopicAndSubscription(projectId: String,
+                                   registeredTopicId: String,
+                                   registeredSubscriptionId: String,
+                                   deletedTopicId: String,
+                                   deletedSubscriptionId: String) {
         // エミュレータ環境でのみ実行。本番環境ではスキップする。
         val emulatorHost = System.getenv("PUBSUB_EMULATOR_HOST") ?: return
 
@@ -54,14 +58,16 @@ object PubSubInitializer {
                 .build()
         )
 
-        try {
-            val topicName = TopicName.of(projectId, topicId)
-            topicAdminClient.createTopic(topicName)
-            logger.info("Created Pub/Sub topic: $topicName")
-        } catch (e: com.google.api.gax.rpc.AlreadyExistsException) {
-            logger.info("Pub/Sub topic already exists: $topicId")
-        } finally {
-            topicAdminClient.close()
+        topicAdminClient.use { topicAdminClient ->
+            for (topicId in listOf(registeredTopicId, deletedTopicId)) {
+                try {
+                    val topicName = TopicName.of(projectId, topicId)
+                    topicAdminClient.createTopic(topicName)
+                    logger.info("Created Pub/Sub topic: $topicName")
+                } catch (e: com.google.api.gax.rpc.AlreadyExistsException) {
+                    logger.info("Pub/Sub topic already exists: $topicId")
+                }
+            }
         }
 
         val subscriptionAdminClient = SubscriptionAdminClient.create(
@@ -72,18 +78,25 @@ object PubSubInitializer {
         )
 
         try {
-            val topicName = TopicName.of(projectId, topicId)
-            val subscriptionName = ProjectSubscriptionName.of(projectId, subscriptionId)
-            val subscription = Subscription.newBuilder()
-                .setName(subscriptionName.toString())
-                .setTopic(topicName.toString())
-                .setPushConfig(PushConfig.getDefaultInstance())
-                .setAckDeadlineSeconds(30)
-                .build()
-            subscriptionAdminClient.createSubscription(subscription)
-            logger.info("Created Pub/Sub subscription: $subscriptionName")
-        } catch (e: com.google.api.gax.rpc.AlreadyExistsException) {
-            logger.info("Pub/Sub subscription already exists: $subscriptionId")
+            for ((topicId, subscriptionId) in listOf(
+                registeredTopicId to registeredSubscriptionId,
+                deletedTopicId to deletedSubscriptionId
+            )) {
+                try {
+                    val topicName = TopicName.of(projectId, topicId)
+                    val subscriptionName = ProjectSubscriptionName.of(projectId, subscriptionId)
+                    val subscription = Subscription.newBuilder()
+                        .setName(subscriptionName.toString())
+                        .setTopic(topicName.toString())
+                        .setPushConfig(PushConfig.getDefaultInstance())
+                        .setAckDeadlineSeconds(30)
+                        .build()
+                    subscriptionAdminClient.createSubscription(subscription)
+                    logger.info("Created Pub/Sub subscription: $subscriptionName")
+                } catch (e: com.google.api.gax.rpc.AlreadyExistsException) {
+                    logger.info("Pub/Sub subscription already exists: $subscriptionId")
+                }
+            }
         } finally {
             try {
                 subscriptionAdminClient.close()
