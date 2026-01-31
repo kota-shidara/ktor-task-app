@@ -9,3 +9,7 @@ storage:
   jdbcURL: "jdbc:postgresql://localhost:5434/user_db"
   user: "user_service"
   password: "password"
+pubsub:
+  projectId: "local-project"
+  topics:
+    userDeleted: "user-deleted"

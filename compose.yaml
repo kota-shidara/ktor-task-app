@@ -25,6 +25,13 @@ services:
     volumes:
       - task_app_task_db_data:/var/lib/postgresql/data
 
+  pubsub-emulator:
+    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:latest
+    container_name: task-app-pubsub-emulator
+    command: gcloud beta emulators pubsub start --host-port=0.0.0.0:8085 --project=local-project
+    ports:
+      - "8085:8085"
+
 volumes:
   task_app_user_db_data:
   task_app_task_db_data:

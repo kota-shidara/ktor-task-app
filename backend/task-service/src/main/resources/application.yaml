@@ -9,3 +9,9 @@ storage:
   jdbcURL: "jdbc:postgresql://localhost:5435/task_db"
   user: "task_service"
   password: "password"
+pubsub:
+  projectId: "local-project"
+  topics:
+    userDeleted: "user-deleted"
+  subscriptions:
+    userDeleted: "task-service-user-deleted-sub"

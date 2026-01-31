@@ -21,6 +21,16 @@ class ExposedUserRepository : UserRepository {
         }.singleOrNull()?.toDomain()
     }
 
+    override suspend fun findById(id: Int): User? = dbQuery {
+        UserEntity.findById(id)?.toDomain()
+    }
+
+    override suspend fun deleteById(id: Int): Boolean = dbQuery {
+        val entity = UserEntity.findById(id)
+        entity?.delete()
+        entity != null
+    }
+
     private fun UserEntity.toDomain() =
         User(
             id = this.id.value,

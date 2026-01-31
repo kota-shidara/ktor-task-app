@@ -116,6 +116,16 @@ resource "google_cloud_run_v2_service" "user" {
           }
         }
       }
+
+      env {
+        name  = "PUBSUB_PROJECTID"
+        value = var.project_id
+      }
+
+      env {
+        name  = "PUBSUB_TOPIC_USER_DELETED"
+        value = google_pubsub_topic.user_deleted.name
+      }
     }
 
     scaling {
@@ -172,6 +182,21 @@ resource "google_cloud_run_v2_service" "task" {
             version = "latest"
           }
         }
+      }
+
+      env {
+        name  = "PUBSUB_PROJECTID"
+        value = var.project_id
+      }
+
+      env {
+        name  = "PUBSUB_TOPIC_USER_DELETED"
+        value = google_pubsub_topic.user_deleted.name
+      }
+
+      env {
+        name  = "PUBSUB_SUBSCRIPTION_USER_DELETED"
+        value = google_pubsub_subscription.task_service_user_deleted.name
       }
     }
 

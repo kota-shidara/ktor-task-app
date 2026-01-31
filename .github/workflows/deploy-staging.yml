@@ -37,7 +37,7 @@ jobs:
       - name: Build and push images
         env:
           REGISTRY: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.AR_REPO }}
-          VITE_API_BASE_URL: http://34.120.187.25
+          VITE_API_BASE_URL: http://34.36.225.148
         run: |
           set -euo pipefail
           docker build -t ${REGISTRY}/bff:${TAG} bff
