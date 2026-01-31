@@ -123,6 +123,11 @@ resource "google_cloud_run_v2_service" "user" {
       }
 
       env {
+        name  = "PUBSUB_TOPIC_USER_REGISTERED"
+        value = google_pubsub_topic.user_registered.name
+      }
+
+      env {
         name  = "PUBSUB_TOPIC_USER_DELETED"
         value = google_pubsub_topic.user_deleted.name
       }
@@ -187,6 +192,16 @@ resource "google_cloud_run_v2_service" "task" {
       env {
         name  = "PUBSUB_PROJECTID"
         value = var.project_id
+      }
+
+      env {
+        name  = "PUBSUB_TOPIC_USER_REGISTERED"
+        value = google_pubsub_topic.user_registered.name
+      }
+
+      env {
+        name  = "PUBSUB_SUBSCRIPTION_USER_REGISTERED"
+        value = google_pubsub_subscription.task_service_user_registered.name
       }
 
       env {
