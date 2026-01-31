@@ -78,3 +78,6 @@ Runs on `http://localhost:5173` (or similar).
 3. Login with `testuser`.
 4. Create tasks, update status, delete tasks.
 5. Delete your account from the dashboard (triggers Pub/Sub event to clean up related tasks).
+
+# terraform削除時
+- VPCネットワークピアリングは、手動で削除する必要がある（terraform destroyを繰り返してもエラーとなる）
