@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
 
 @Serializable
-private data class UserRegisteredEvent(val userId: Int)
+private data class UserRegisteredEvent(val userId: Int, val name: String)
 
 @Serializable
 private data class UserDeletedEvent(val userId: Int)
@@ -29,9 +29,9 @@ class PubSubUserEventPublisher(
     private val userRegisteredPublisher: Publisher = createPublisher(projectId, registeredTopicId)
     private val userDeletedPublisher: Publisher = createPublisher(projectId, deletedTopicId)
 
-    override fun publishUserRegistered(userId: Int) {
+    override fun publishUserRegistered(userId: Int, name: String) {
         try {
-            val json = Json.encodeToString(UserRegisteredEvent.serializer(), UserRegisteredEvent(userId))
+            val json = Json.encodeToString(UserRegisteredEvent.serializer(), UserRegisteredEvent(userId, name))
             publish(userRegisteredPublisher, "user-registered", json, userId)
         } catch (e: Exception) {
             logger.error("Failed to publish user-registered event for userId=$userId: ${e.message}", e)

@@ -25,7 +25,7 @@ class UserService(
         val createdUser = repository.create(user)
 
         try {
-            eventPublisher?.publishUserRegistered(createdUser.id!!)
+            eventPublisher?.publishUserRegistered(createdUser.id!!, createdUser.name)
         } catch (e: Exception) {
             logger.error("User registered but failed to publish event for userId=${createdUser.id!!}.", e)
         }
