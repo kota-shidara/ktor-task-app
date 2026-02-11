@@ -7,6 +7,7 @@ import com.google.cloud.pubsub.v1.Publisher
 import com.google.protobuf.ByteString
 import com.google.pubsub.v1.PubsubMessage
 import com.google.pubsub.v1.TopicName
+import com.example.config.DotenvConfig
 import io.grpc.ManagedChannelBuilder
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -59,7 +60,7 @@ class PubSubUserEventPublisher(
     private fun createPublisher(projectId: String, topicId: String): Publisher {
         val topicName = TopicName.of(projectId, topicId)
         val builder = Publisher.newBuilder(topicName)
-        val emulatorHost = System.getenv("PUBSUB_EMULATOR_HOST")
+        val emulatorHost = DotenvConfig.get("PUBSUB_EMULATOR_HOST")
         // ローカル環境でのみ必要な処理。本番ではライブラリが自動でgoogle cloud上のpub/subにつなげくれる模様（詳細はまだ理解していない）
         if (emulatorHost != null) {
             val channel = ManagedChannelBuilder.forTarget(emulatorHost).usePlaintext().build()

@@ -6,6 +6,7 @@ import com.google.api.gax.rpc.FixedTransportChannelProvider
 import com.google.cloud.pubsub.v1.TopicAdminClient
 import com.google.cloud.pubsub.v1.TopicAdminSettings
 import com.google.pubsub.v1.TopicName
+import com.example.config.DotenvConfig
 import io.grpc.ManagedChannelBuilder
 import org.slf4j.LoggerFactory
 
@@ -25,7 +26,7 @@ object PubSubInitializer {
 
     fun ensureTopicExists(projectId: String, registeredTopicId: String, deletedTopicId: String) {
         // エミュレータ環境でのみ実行。本番環境ではスキップする。
-        val emulatorHost = System.getenv("PUBSUB_EMULATOR_HOST") ?: return
+        val emulatorHost = DotenvConfig.get("PUBSUB_EMULATOR_HOST") ?: return
 
         // エミュレータへのgRPC接続を手動構築する。
         // ManagedChannel: 特定サーバーへのTCP接続を抽象化したgRPCの通信パイプ。

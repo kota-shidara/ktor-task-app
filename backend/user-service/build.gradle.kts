@@ -35,6 +35,7 @@ dependencies {
     implementation(libs.hikaricp)
     implementation(libs.jbcrypt)
     implementation(libs.google.cloud.pubsub)
+    implementation(libs.dotenv.kotlin)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
 }
