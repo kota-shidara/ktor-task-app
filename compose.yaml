@@ -32,6 +32,15 @@ services:
     ports:
       - "8085:8085"
 
+  cloud-tasks-emulator:
+    image: ghcr.io/aertje/cloud-tasks-emulator:latest
+    container_name: task-app-cloud-tasks-emulator
+    command: >
+      -host 0.0.0.0 -port 8123
+      -queue "projects/local-project/locations/us-west1/queues/notion-export-queue"
+    ports:
+      - "8123:8123"
+
 volumes:
   task_app_user_db_data:
   task_app_task_db_data:
