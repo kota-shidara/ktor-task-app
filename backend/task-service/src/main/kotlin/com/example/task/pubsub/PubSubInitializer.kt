@@ -12,6 +12,7 @@ import com.google.pubsub.v1.PushConfig
 import com.google.pubsub.v1.Subscription
 import com.google.pubsub.v1.TopicName
 import io.grpc.ManagedChannelBuilder
+import com.example.config.DotenvConfig
 import org.slf4j.LoggerFactory
 
 /**
@@ -34,7 +35,7 @@ object PubSubInitializer {
                                    deletedTopicId: String,
                                    deletedSubscriptionId: String) {
         // エミュレータ環境でのみ実行。本番環境ではスキップする。
-        val emulatorHost = System.getenv("PUBSUB_EMULATOR_HOST") ?: return
+        val emulatorHost = DotenvConfig.get("PUBSUB_EMULATOR_HOST") ?: return
 
         // エミュレータへのgRPC接続を手動構築する。
         // ManagedChannel: 特定サーバーへのTCP接続を抽象化したgRPCの通信パイプ。

@@ -9,6 +9,7 @@ import com.google.cloud.pubsub.v1.MessageReceiver
 import com.google.cloud.pubsub.v1.Subscriber
 import com.google.pubsub.v1.ProjectSubscriptionName
 import com.google.pubsub.v1.PubsubMessage
+import com.example.config.DotenvConfig
 import io.grpc.ManagedChannelBuilder
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
@@ -34,7 +35,7 @@ class UserSubscriber(
         val subscriptionName = ProjectSubscriptionName.of(projectId, subscriptionId)
         val builder = Subscriber.newBuilder(subscriptionName, receiver)
 
-        val emulatorHost = System.getenv("PUBSUB_EMULATOR_HOST")
+        val emulatorHost = DotenvConfig.get("PUBSUB_EMULATOR_HOST")
         if (emulatorHost != null) {
             val channel = ManagedChannelBuilder
                 .forTarget(emulatorHost)
