@@ -213,6 +213,46 @@ resource "google_cloud_run_v2_service" "task" {
         name  = "PUBSUB_SUBSCRIPTION_USER_DELETED"
         value = google_pubsub_subscription.task_service_user_deleted.name
       }
+
+      env {
+        name = "NOTION_API_KEY"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.notion_api_key.secret_id
+            version = "latest"
+          }
+        }
+      }
+
+      env {
+        name = "NOTION_PAGE_ID"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.notion_page_id.secret_id
+            version = "latest"
+          }
+        }
+      }
+
+      env {
+        name  = "CLOUD_TASKS_PROJECT_ID"
+        value = var.project_id
+      }
+
+      env {
+        name  = "CLOUD_TASKS_LOCATION"
+        value = var.region
+      }
+
+      env {
+        name  = "CLOUD_TASKS_NOTION_EXPORT_QUEUE_ID"
+        value = google_cloud_tasks_queue.notion_export.name
+      }
+
+      env {
+        name  = "CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL"
+        value = google_service_account.cloud_tasks_invoker.email
+      }
     }
 
     scaling {

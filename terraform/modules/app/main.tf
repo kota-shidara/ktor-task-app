@@ -7,7 +7,8 @@ resource "google_project_service" "services" {
     "vpcaccess.googleapis.com",
     "servicenetworking.googleapis.com",
     "artifactregistry.googleapis.com",
-    "pubsub.googleapis.com"
+    "pubsub.googleapis.com",
+    "cloudtasks.googleapis.com"
   ])
 
   project            = var.project_id
