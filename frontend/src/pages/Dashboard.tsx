@@ -19,6 +19,9 @@ const dashboard = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportMessage, setExportMessage] = useState<string | null>(null);
+  const [exportStatus, setExportStatus] = useState<'success' | 'error' | null>(null);
 
   const { name, logout, deleteAccount } = useAuth()
 
@@ -60,6 +63,23 @@ const dashboard = () => {
     }
   }
 
+  const handleExportToNotion = async () => {
+    setIsExporting(true)
+    setExportMessage(null)
+    setExportStatus(null)
+    try {
+      await client.post('/api/tasks/export-notion')
+      setExportMessage('Notion出力をリクエストしました')
+      setExportStatus('success')
+    } catch (e) {
+      setExportMessage('Notion出力に失敗しました')
+      setExportStatus('error')
+    } finally {
+      setIsExporting(false)
+      setTimeout(() => { setExportMessage(null); setExportStatus(null) }, 3000)
+    }
+  }
+
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
       <div className="flex justify-between items-center mb-6">
@@ -68,6 +88,13 @@ const dashboard = () => {
           <p className="text-sm text-gray-500">{name}</p>
         </div>
         <div className="flex gap-2">
+          <button
+            className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded disabled:opacity-50"
+            onClick={handleExportToNotion}
+            disabled={isExporting}
+          >
+            {isExporting ? '出力中...' : 'Notion出力'}
+          </button>
           <button
             className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
             onClick={logout}
@@ -82,10 +109,17 @@ const dashboard = () => {
           </button>
         </div>
       </div>
-      
+
+      {exportMessage && (
+        <div className={`mb-4 p-3 rounded text-sm ${
+          exportStatus === 'error' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
+        }`}>
+          {exportMessage}
+        </div>
+      )}
 
       <NewTaskForm onCreateTask={fetchTasks} />
-      
+
       <div className="grid gap-4">
         {tasks.map(task => {
           return (

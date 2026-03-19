@@ -37,3 +37,31 @@ resource "google_secret_manager_secret_iam_member" "run_secret_accessor_task_db_
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.task.email}"
 }
+
+# Notion API Key（値は手動設定: gcloud secrets versions add）
+resource "google_secret_manager_secret" "notion_api_key" {
+  secret_id = "${local.name_prefix}-notion-api-key"
+  replication {
+    auto {}
+  }
+}
+
+# Notion Page ID（値は手動設定: gcloud secrets versions add）
+resource "google_secret_manager_secret" "notion_page_id" {
+  secret_id = "${local.name_prefix}-notion-page-id"
+  replication {
+    auto {}
+  }
+}
+
+resource "google_secret_manager_secret_iam_member" "run_secret_accessor_notion_api_key" {
+  secret_id = google_secret_manager_secret.notion_api_key.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.task.email}"
+}
+
+resource "google_secret_manager_secret_iam_member" "run_secret_accessor_notion_page_id" {
+  secret_id = google_secret_manager_secret.notion_page_id.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.task.email}"
+}

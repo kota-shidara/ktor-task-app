@@ -1,6 +1,7 @@
 package com.example.com.example.task.interfaces.api
 
 import com.example.com.example.task.application.dto.TaskDto
+import com.example.com.example.task.application.service.NotionExportService
 import com.example.com.example.task.application.service.TaskService
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
@@ -12,7 +13,7 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 
-fun Route.taskRoute(taskService: TaskService) {
+fun Route.taskRoute(taskService: TaskService, notionExportService: NotionExportService) {
     route("/tasks") {
         get {
             val authHeader = call.request.headers["X-User-Authorization"]
@@ -86,6 +87,22 @@ fun Route.taskRoute(taskService: TaskService) {
                 call.respond(HttpStatusCode.OK)
             } else {
                 call.respond(HttpStatusCode.NotFound)
+            }
+        }
+
+        post("/export-notion") {
+            val authHeader = call.request.headers["X-User-Authorization"]
+            val userId = authHeader?.removePrefix("Bearer dummy-token-")?.toIntOrNull()
+            if (userId == null) {
+                call.respond(HttpStatusCode.Unauthorized)
+                return@post
+            }
+
+            try {
+                notionExportService.requestExport(userId)
+                call.respond(HttpStatusCode.Accepted, mapOf("message" to "Notion出力をリクエストしました"))
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.InternalServerError, mapOf("message" to "Notion出力のリクエストに失敗しました"))
             }
         }
     }
