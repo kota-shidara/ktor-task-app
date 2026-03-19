@@ -1,4 +1,5 @@
 # CLAUDE.md
+test1
 
 このファイルは、Claude Code (claude.ai/code) がこのリポジトリで作業する際のガイダンスを提供します。
 
